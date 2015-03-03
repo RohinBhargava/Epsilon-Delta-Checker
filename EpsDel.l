@@ -54,7 +54,7 @@ double solve_delta(double epsilon, double fvalue, double c, char *function)
 	double lb = c;
 	bool ud = false;
 	while (1) {
-		yylval.fun = init_function((ub += 0.000001));
+		yylval.fun = init_function((ub += 0.0000001));
 		YY_BUFFER_STATE my_string_buffer = yy_scan_string(function); 
 		yy_switch_to_buffer( my_string_buffer ); 
 		yyparse(); 
@@ -65,7 +65,7 @@ double solve_delta(double epsilon, double fvalue, double c, char *function)
 			break;
 		}
 
-		yylval.fun = init_function((lb -= 0.000001));
+		yylval.fun = init_function((lb -= 0.0000001));
 		my_string_buffer = yy_scan_string(function); 
 		yy_switch_to_buffer( my_string_buffer ); 
 		yyparse(); 
@@ -87,20 +87,20 @@ int main()
 	char function[88];
 	double epsilon;
 	double c;
-	printf("Please enter a value for epsilon:\n");
-	scanf("%lf", &epsilon);
-	printf("Epsilon entered: %lf\n", epsilon);
-	printf("Please enter a value for a point in the domain where you are trying to evaluate a delta:\n");
-	scanf("%lf", &c);
-	printf("Value entered: %lf\n", c);
-	yylval.fun = init_function(c);
 	printf("Please enter a single-variable function (will treat all letters as same variable): ");
 	scanf("%s", function);
+	printf("Please enter a value for epsilon:\n");
+	scanf("%lf", &epsilon);
+	printf("Epsilon entered: %.7lf\n", epsilon);
+	printf("Please enter a value for a point in the domain where you are trying to evaluate a delta:\n");
+	scanf("%lf", &c);
+	printf("Value entered: %.7lf\n", c);
+	yylval.fun = init_function(c);
 	YY_BUFFER_STATE my_string_buffer = yy_scan_string(function); 
 	yy_switch_to_buffer( my_string_buffer ); 
 	yyparse(); 
 	yy_delete_buffer(my_string_buffer );
 	double copy;
 	memcpy(&copy, &yylval.du, sizeof(double));
-	printf("The delta that satisfies this system is less than %lf.\n", solve_delta(epsilon, copy, c, function));
+	printf("The delta that satisfies this system is less than %.7lf.\n", solve_delta(epsilon, copy, c, function));
 }
