@@ -18,6 +18,23 @@
 
 %%
 
+[ \t\n]	;
+"cos"	{ return COS; }
+"sin"	{ return SIN; }
+"tan"	{ return TAN; }
+"sec"	{ return SEC; }
+"csc"	{ return CSC; }
+"cot"	{ return COT; }
+"e"		{ return E; }
+"arcsin" { return ARCSIN; }
+"arccos" { return ARCCOS; }
+"arctan"	{ return ARCTAN; }
+"arcsec"	{ return ARCSEC; }
+"arccsc"	{ return ARCCSC; }
+"arccot"	{ return ARCCOT; }
+"ln"		{ return LN; }
+"log"		{ return LOG; }
+"sqrt"		{ return SQRT; }
 \( 		{ return LPARENTHESIS; }
 \)		{ return RPARENTHESIS; }
 \^		{ return EXPONENT; }
@@ -27,9 +44,17 @@
 \-		{ return SUBTRACT; }
 [xX]		{ return VARIABLE; }
 [0-9\.]* { sscanf(yytext, "%lf", &yylval.fun->dub); return NUMBER; }
-[ \t\n]	;
 
 %%
+
+bool contains_x(char *func)
+{
+	int i;
+	for(i = 0; i < strlen(func); i++)
+		if (func[i] == 'x' || func[i] == 'X')
+			return true;
+	return false;
+}
 
 function* init_function(double c)
 {
@@ -76,10 +101,11 @@ double solve_delta(double epsilon, double fvalue, double c, char *function)
 			break;
 		}
 	}
+
 	if (ud)
-		return ub-c;
+		return fabs(ub-c);
 	else
-		return lb-c;
+		return fabs(lb-c);
 }
 
 int main() 
@@ -88,13 +114,15 @@ int main()
 	double epsilon;
 	double c;
 	printf("Please enter a single-variable function (will treat all letters as same variable): ");
-	scanf("%s", function);
-	printf("Please enter a value for epsilon:\n");
+	scanf("%[^\n]", function);
+	printf("Function entered: %s\n", function);
+	printf("Please enter a positive value for epsilon (larger epsilons take more time to compute): ");
 	scanf("%lf", &epsilon);
 	printf("Epsilon entered: %.7lf\n", epsilon);
-	printf("Please enter a value for a point in the domain where you are trying to evaluate a delta:\n");
+	printf("Please enter a value for a point in the domain where you are trying to evaluate a delta: ");
 	scanf("%lf", &c);
 	printf("Value entered: %.7lf\n", c);
+	printf("Please wait while we compute. Thank you!\n");
 	yylval.fun = init_function(c);
 	YY_BUFFER_STATE my_string_buffer = yy_scan_string(function); 
 	yy_switch_to_buffer( my_string_buffer ); 
@@ -102,5 +130,8 @@ int main()
 	yy_delete_buffer(my_string_buffer );
 	double copy;
 	memcpy(&copy, &yylval.du, sizeof(double));
-	printf("The delta that satisfies this system is less than %.7lf.\n", solve_delta(epsilon, copy, c, function));
+	if (contains_x(function))
+		printf("The delta that satisfies this system is less than %.7lf.\n", solve_delta(epsilon, copy, c, function));
+	else
+		printf("There is no such delta that satisfies this epsilon.\n");
 }
