@@ -30,6 +30,7 @@
 		| expression DIVIDE exponent { $$ = $1 / $3; }
 		| expression ADD exponent { $$ = $1 + $3; }
 		| expression SUBTRACT exponent{ $$ = $1 - $3; }
+		| exponent exponent { $$ = $1 * $2; }
 		| exponent { $$ = $1; }
 		;		
 
@@ -59,7 +60,6 @@
 
 	parenthesis
 		: LPARENTHESIS expression RPARENTHESIS { $$ = $2; }
-		| number exponent { $$ = $1 * $2; }
 		| number { $$ = $1; }
 		;
 

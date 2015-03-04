@@ -37,4 +37,4 @@ lex.yy.c: EpsDel.l
 ## from scratch
 
 clean:
-	-rm -f lex.yy.c *.tab.*  EpsDel *.output
+	-rm -f lex.yy.c lex.yy.o *.tab.*  EpsDel *.output
