@@ -30,7 +30,8 @@
 		| expression DIVIDE exponent { $$ = $1 / $3; }
 		| expression ADD exponent { $$ = $1 + $3; }
 		| expression SUBTRACT exponent{ $$ = $1 - $3; }
-		| exponent exponent { $$ = $1 * $2; }
+		| expression exponent { $$ = $1 * $2; }
+		| SUBTRACT exponent { $$ = -1 * $2; }
 		| exponent { $$ = $1; }
 		;		
 

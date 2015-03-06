@@ -44,6 +44,7 @@
 \-		{ return SUBTRACT; }
 [xX]		{ return VARIABLE; }
 [0-9\.]* { sscanf(yytext, "%lf", &yylval.fun->dub); return NUMBER; }
+. { printf("Invalid input. Exiting.\n"); exit(0); }
 
 %%
 
