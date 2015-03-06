@@ -16,7 +16,7 @@
 	double du;
 }
 
-%type<du> expression exponent parenthesis number prec
+%type<du> expression exponent parenthesis number prec md
 %start print
 
 %%
@@ -26,14 +26,18 @@
 		;
 
 	expression
-		: expression MULTIPLY exponent { $$ = $1 * $3; }
-		| expression DIVIDE exponent { $$ = $1 / $3; }
-		| expression ADD exponent { $$ = $1 + $3; }
-		| expression SUBTRACT exponent{ $$ = $1 - $3; }
-		| expression exponent { $$ = $1 * $2; }
-		| SUBTRACT exponent { $$ = -1 * $2; }
-		| exponent { $$ = $1; }
+		: expression ADD md { $$ = $1 + $3; }
+		| expression SUBTRACT md{ $$ = $1 - $3; }
+		| expression md { $$ = $1 * $2; }
+		| SUBTRACT md { $$ = -1 * $2; }
+		| md { $$ = $1; }
 		;		
+
+	md
+		: md MULTIPLY exponent { $$ = $1 * $3; }
+		| md DIVIDE exponent { $$ = $1 / $3; }
+		| exponent { $$ = $1; }
+		;
 
 	exponent
 		: exponent EXPONENT prec { $$ = pow($1,$3); }
