@@ -28,14 +28,12 @@
 	expression
 		: expression ADD md { $$ = $1 + $3; }
 		| expression SUBTRACT md{ $$ = $1 - $3; }
-		| expression md { $$ = $1 * $2; }
-		| SUBTRACT md { $$ = -1 * $2; }
 		| md { $$ = $1; }
 		;		
 
 	md
 		: md MULTIPLY exponent { $$ = $1 * $3; }
-		| md DIVIDE exponent { $$ = $1 / $3; }
+        | md DIVIDE exponent { $$ = $1 / $3; }
 		| exponent { $$ = $1; }
 		;
 
@@ -60,11 +58,13 @@
 		| LN parenthesis { $$ = log($2); }
 		| LOG parenthesis { $$ = log10($2); }
 		| SQRT parenthesis { $$ = sqrt($2); }
+        | SUBTRACT parenthesis { $$ = -1 * $2; }
 		| parenthesis { $$ = $1; }
 		;
 
 	parenthesis
 		: LPARENTHESIS expression RPARENTHESIS { $$ = $2; }
+        | number parenthesis { $$ = $1 * $2; }
 		| number { $$ = $1; }
 		;
 
